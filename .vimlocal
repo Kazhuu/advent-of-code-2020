@@ -1,0 +1,2 @@
+set makeprg=make\ -C\ build
+nnoremap <leader>m :silent make\|redraw!\|cc<CR>

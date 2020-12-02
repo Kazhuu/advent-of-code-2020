@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <cassert>
 
-void read_file(std::vector<std::uint32_t> &buffer) {
+void read_stdin(std::vector<std::uint32_t> &buffer) {
     std::string line;
     while (std::getline(std::cin, line)) {
         buffer.push_back(std::stoi(line));
@@ -45,7 +45,7 @@ int second_solution(std::vector<std::uint32_t> &input) {
 int main() {
     std::vector<std::uint32_t> input = {};
 
-    read_file(input);
+    read_stdin(input);
     std::uint32_t first = first_solution(input);
     std::uint32_t second = second_solution(input);
     assert(first == 988771 && "first solution doesn't match");
