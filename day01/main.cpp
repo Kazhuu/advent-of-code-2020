@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstdint>
 #include <cassert>
+#include <algorithm>
 
 void read_stdin(std::vector<std::uint32_t> &buffer) {
     std::string line;
@@ -11,43 +12,32 @@ void read_stdin(std::vector<std::uint32_t> &buffer) {
     }
 }
 
-int first_solution(std::vector<std::uint32_t> &input) {
-    int target = 2020;
-    std::vector<std::uint32_t>::iterator main_it;
-    std::vector<std::uint32_t>::iterator second_it;
-    for (main_it = input.begin(); main_it != input.end(); ++main_it) {
-        for (second_it = std::next(main_it, 1); second_it != input.end(); ++second_it) {
-            if (*main_it + *second_it == target) {
-                return *main_it * *second_it;
+// Adopted from:
+// https://stackoverflow.com/questions/9430568/generating-combinations-in-c
+int combinations(std::vector<std::uint32_t> &input, int count) {
+    std::vector<bool> mask(input.size());
+    std::fill(mask.end() - count, mask.end(), true);
+    do {
+        std::uint32_t temp = 0;
+        std::uint32_t result = 1;
+        for (int i = 0; i < input.size(); ++i) {
+            if (mask[i]) {
+                temp += input[i];
+                result *= input[i];
             }
         }
-    }
-    return 0;
-}
-
-int second_solution(std::vector<std::uint32_t> &input) {
-    int target = 2020;
-    std::vector<std::uint32_t>::iterator main_it;
-    std::vector<std::uint32_t>::iterator second_it;
-    std::vector<std::uint32_t>::iterator third_it;
-    for (main_it = input.begin(); main_it != input.end(); ++main_it) {
-        for (second_it = std::next(main_it, 1); second_it != input.end(); ++second_it) {
-            for (third_it = std::next(second_it, 1); third_it != input.end(); ++third_it) {
-                if (*main_it + *second_it + *third_it == target) {
-                    return *main_it * *second_it * *third_it;
-                }
-            }
+        if (temp == 2020) {
+            return result;
         }
-    }
+    } while (std::next_permutation(mask.begin(), mask.end()));
     return 0;
 }
 
 int main() {
     std::vector<std::uint32_t> input = {};
-
     read_stdin(input);
-    std::uint32_t first = first_solution(input);
-    std::uint32_t second = second_solution(input);
+    std::uint32_t first = combinations(input, 2);
+    std::uint32_t second = combinations(input, 3);
     assert(first == 988771 && "first solution doesn't match");
     assert(second == 171933104 && "second solution doesn't match");
     std::cout << "first answer: " << first << std::endl;
