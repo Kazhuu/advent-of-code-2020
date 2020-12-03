@@ -17,21 +17,6 @@ std::vector<std::vector<char>> read_stdin() {
     return input;
 }
 
-/**
- * Print given map like in the puzzle. Not used in the final solution.
- */
-void print_map(const std::vector<std::vector<char>> &map) {
-    for (const std::vector<char> &line : map) {
-        for (const char &c : line) {
-            std::cout << c;
-        }
-        std::cout << "\n";
-    }
-}
-
-/**
- * Count trees on the path with given moving coordinates.
- */
 int count_trees(const std::vector<std::vector<char>> &map, std::uint32_t move_x, std::uint32_t move_y) {
     std::uint32_t x = 0;
     std::uint32_t y = 0;
@@ -64,7 +49,6 @@ int second_solution(const std::vector<std::vector<char>> &map) {
 
 int main() {
     const std::vector<std::vector<char>> map = read_stdin();
-    std::cout << "map size x=" << map[0].size() << ", y=" << map.size() << std::endl;
     std::uint32_t first = first_solution(map);
     std::uint32_t second = second_solution(map);
     assert(first == 178 && "first solution doesn't match");
