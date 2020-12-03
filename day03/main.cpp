@@ -17,10 +17,10 @@ std::vector<std::vector<char>> read_stdin() {
     return input;
 }
 
-int count_trees(const std::vector<std::vector<char>> &map, std::uint32_t move_x, std::uint32_t move_y) {
-    std::uint32_t x = 0;
-    std::uint32_t y = 0;
-    std::uint32_t tree_count = 0;
+int count_trees(const std::vector<std::vector<char>> &map, uint32_t move_x, uint32_t move_y) {
+    uint32_t x = 0;
+    uint32_t y = 0;
+    uint32_t tree_count = 0;
     do {
         if (map.at(y).at(x) == '#') {
             tree_count++;
@@ -33,14 +33,14 @@ int count_trees(const std::vector<std::vector<char>> &map, std::uint32_t move_x,
 }
 
 int first_solution(const std::vector<std::vector<char>> &map) {
-    std::uint32_t move_x = 3;
-    std::uint32_t move_y = 1;
+    uint32_t move_x = 3;
+    uint32_t move_y = 1;
     return count_trees(map, move_x, move_y);
 }
 
 int second_solution(const std::vector<std::vector<char>> &map) {
-    std::list<std::pair<std::uint32_t, std::uint32_t>> slopes = {{1, 1}, {3, 1}, {5, 1}, {7, 1}, {1, 2}};
-    std::uint32_t result = 1;
+    std::list<std::pair<uint32_t, uint32_t>> slopes = {{1, 1}, {3, 1}, {5, 1}, {7, 1}, {1, 2}};
+    uint32_t result = 1;
     for (auto &slope : slopes) {
         result *= count_trees(map, slope.first, slope.second);
     }
@@ -49,8 +49,8 @@ int second_solution(const std::vector<std::vector<char>> &map) {
 
 int main() {
     const std::vector<std::vector<char>> map = read_stdin();
-    std::uint32_t first = first_solution(map);
-    std::uint32_t second = second_solution(map);
+    uint32_t first = first_solution(map);
+    uint32_t second = second_solution(map);
     assert(first == 178 && "first solution doesn't match");
     assert(second == 3492520200 && "second solution doesn't match");
     std::cout << "first answer: " << first << std::endl;

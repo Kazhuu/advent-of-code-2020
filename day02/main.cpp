@@ -14,9 +14,9 @@ std::vector<std::string> read_stdin() {
     return input;
 }
 
-std::tuple<std::string, char, std::uint32_t, std::uint32_t> parse_information(const std::string &line) {
-    std::uint32_t start_pos = 0;
-    std::uint32_t end_pos = line.find("-");
+std::tuple<std::string, char, uint32_t, uint32_t> parse_information(const std::string &line) {
+    uint32_t start_pos = 0;
+    uint32_t end_pos = line.find("-");
     std::string min = line.substr(start_pos, end_pos);
     start_pos = end_pos + 1;
     end_pos = line.find(" ", start_pos);
@@ -30,8 +30,8 @@ std::tuple<std::string, char, std::uint32_t, std::uint32_t> parse_information(co
     return std::make_tuple(password, character.at(0), std::stoi(min), std::stoi(max));
 }
 
-std::uint32_t count_occurences(const std::string &line, char character) {
-    std::uint32_t count = 0;
+uint32_t count_occurences(const std::string &line, char character) {
+    uint32_t count = 0;
     for (int i = 0; i < line.size(); ++i) {
         if (line[i] == character) {
             count++;
@@ -41,10 +41,10 @@ std::uint32_t count_occurences(const std::string &line, char character) {
 }
 
 int first_solution(const std::vector<std::string> &input) {
-    std::uint32_t valid_passwords = 0;
+    uint32_t valid_passwords = 0;
     for (const auto &line : input) {
         auto [password, character, min, max] = parse_information(line);
-        std::uint32_t count = count_occurences(password, character);
+        uint32_t count = count_occurences(password, character);
         if (count >= min && count <= max) {
             valid_passwords++;
         }
@@ -53,7 +53,7 @@ int first_solution(const std::vector<std::string> &input) {
 }
 
 int second_solution(std::vector<std::string> &input) {
-    std::uint32_t valid_passwords = 0;
+    uint32_t valid_passwords = 0;
     for (const auto &line : input) {
         auto [password, character, first, second] = parse_information(line);
         if (password[first - 1] == character && password[second - 1] != character) {
@@ -67,8 +67,8 @@ int second_solution(std::vector<std::string> &input) {
 
 int main() {
     std::vector<std::string> input = read_stdin();
-    std::uint32_t first = first_solution(input);
-    std::uint32_t second = second_solution(input);
+    uint32_t first = first_solution(input);
+    uint32_t second = second_solution(input);
     assert(first == 643 && "first solution doesn't match");
     assert(second == 388 && "second solution doesn't match");
     std::cout << "first answer: " << first << std::endl;
