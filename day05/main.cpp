@@ -1,4 +1,3 @@
-#include <array>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -14,15 +13,15 @@ std::vector<std::string> read_stdin() {
     return input;
 }
 
-uint32_t binary_partition(const std::string &line, uint32_t index, uint32_t min, uint32_t max) {
+uint32_t binary_search(const std::string &line, uint32_t index, uint32_t min, uint32_t max) {
     if (line[index] == 'F' || line[index] == 'L') {
         if (index < line.size()) {
-            return binary_partition(line, index + 1, min, max - std::ceil((max - min) / 2.0));
+            return binary_search(line, index + 1, min, max - std::ceil((max - min) / 2.0));
         }
         return min;
     } else if (line[index] == 'B' || line[index] == 'R') {
         if (index < line.size()) {
-            return binary_partition(line, index + 1, min + std::ceil((max - min) / 2.0), max);
+            return binary_search(line, index + 1, min + std::ceil((max - min) / 2.0), max);
         }
         return max;
     }
@@ -30,8 +29,8 @@ uint32_t binary_partition(const std::string &line, uint32_t index, uint32_t min,
 }
 
 uint32_t decode_boarding_pass(const std::string &pass) {
-    uint32_t row = binary_partition(pass.substr(0, 7), 0, 0, 127);
-    uint32_t column = binary_partition(pass.substr(7, pass.size()), 0, 0, 7);
+    uint32_t row = binary_search(pass.substr(0, 7), 0, 0, 127);
+    uint32_t column = binary_search(pass.substr(7, pass.size()), 0, 0, 7);
     return row * 8 + column;
 }
 
@@ -59,8 +58,8 @@ uint32_t second_solution(const std::vector<std::string> &input) {
 
 int main() {
     const std::vector<std::string> input = read_stdin();
-    assert(binary_partition("FBFBBFF", 0, 0, 127) == 44 && "decode row broken");
-    assert(binary_partition("RLR", 0, 0, 7) == 5 && "decode column broken");
+    assert(binary_search("FBFBBFF", 0, 0, 127) == 44 && "decode row broken");
+    assert(binary_search("RLR", 0, 0, 7) == 5 && "decode column broken");
     uint32_t id = decode_boarding_pass("FBFBBFFRLR");
     assert(id == 357 && "decode boarding pass broken");
 
