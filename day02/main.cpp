@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <tuple>
 #include <cassert>
+#include <algorithm>
 
 std::vector<std::string> read_stdin() {
     std::vector<std::string> input;
@@ -30,21 +31,11 @@ std::tuple<std::string, char, uint32_t, uint32_t> parse_information(const std::s
     return std::make_tuple(password, character.at(0), std::stoi(min), std::stoi(max));
 }
 
-uint32_t count_occurences(const std::string &line, char character) {
-    uint32_t count = 0;
-    for (int i = 0; i < line.size(); ++i) {
-        if (line[i] == character) {
-            count++;
-        }
-    }
-    return count;
-}
-
 int first_solution(const std::vector<std::string> &input) {
     uint32_t valid_passwords = 0;
     for (const auto &line : input) {
         auto [password, character, min, max] = parse_information(line);
-        uint32_t count = count_occurences(password, character);
+        uint32_t count = std::count(password.begin(), password.end(), character);
         if (count >= min && count <= max) {
             valid_passwords++;
         }
