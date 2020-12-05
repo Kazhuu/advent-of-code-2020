@@ -34,19 +34,21 @@ uint32_t decode_boarding_pass(const std::string &pass) {
     return row * 8 + column;
 }
 
-uint32_t first_solution(const std::vector<std::string> &input) {
-    uint32_t highest_id = 0;
-    for (const auto &pass : input) {
-        highest_id = std::max(highest_id, decode_boarding_pass(pass));
-    }
-    return highest_id;
-}
-
-uint32_t second_solution(const std::vector<std::string> &input) {
+std::vector<uint32_t> seat_ids(const std::vector<std::string> &input) {
     std::vector<uint32_t> ids;
     for (auto &pass : input) {
         ids.emplace_back(decode_boarding_pass(pass));
     }
+    return ids;
+}
+
+uint32_t first_solution(const std::vector<std::string> &input) {
+    std::vector<uint32_t> ids = seat_ids(input);
+    return *std::max_element(ids.begin(), ids.end());
+}
+
+uint32_t second_solution(const std::vector<std::string> &input) {
+    std::vector<uint32_t> ids = seat_ids(input);
     std::sort(ids.begin(), ids.end());
     for (int i = 0; i < ids.size(); ++i) {
         if (ids[i] + 1 != ids[i + 1]) {
