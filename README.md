@@ -19,5 +19,5 @@ puzzle input for it
 
 ```
 cd build/dayXX
-cat input | ./dayXX
+./dayXX < input
 ```
