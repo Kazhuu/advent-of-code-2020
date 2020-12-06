@@ -1,9 +1,9 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <set>
+#include <unordered_set>
 #include <cassert>
-#include <ranges>
+#include <algorithm>
 
 std::vector<std::vector<std::string>> parse_stdin() {
     std::vector<std::vector<std::string>> output;
@@ -24,12 +24,10 @@ std::vector<std::vector<std::string>> parse_stdin() {
 
 uint32_t first_solution(const std::vector<std::vector<std::string>> &input) {
     uint32_t total_count = 0;
-    std::set<char> answers;
+    std::unordered_set<char> answers;
     for (auto &group : input) {
         for (auto &line : group) {
-            for (auto &character : line) {
-                answers.insert(character);
-            }
+            answers.insert(line.begin(), line.end());
         }
         total_count += answers.size();
         answers.clear();
@@ -39,21 +37,18 @@ uint32_t first_solution(const std::vector<std::vector<std::string>> &input) {
 
 uint32_t second_solution(const std::vector<std::vector<std::string>> &input) {
     uint32_t total_count = 0;
+    std::string seen;
     for (auto &group : input) {
-        // Iterate over possible questions from a to z.
-        for (int i : std::ranges::iota_view(97, 123)) {
-            char question = char(i);
-            bool all_answered = true;
-            for (auto &line : group) {
-                if (line.find(question) == std::string::npos) {
-                    all_answered = false;
-                    break;
-                }
-            }
-            if (all_answered) {
-                total_count++;
-            }
+        seen  = group[0];
+        for (int i = 1; i < group.size(); ++i) {
+            seen.erase(
+                std::remove_if(seen.begin(), seen.end(),
+                    [&group, &i](char c) { return group[i].find(c) == std::string::npos; }
+                ),
+                seen.end()
+            );
         }
+        total_count += seen.size();
     }
     return total_count;
 }
