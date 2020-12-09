@@ -42,13 +42,30 @@ uint64_t first_solution(const std::vector<uint64_t> &input) {
     return 0;
 }
 
+uint64_t second_solution(const std::vector<uint64_t> &input, uint64_t target) {
+    for (int i = 0; i < input.size(); ++i) {
+        uint32_t index = 0;
+        uint64_t sum = 0;
+        do {
+            sum += input[i + index];
+            if (sum == target) {
+                auto begin = input.begin() + i;
+                auto end = input.begin() + i + index;
+                return *std::min_element(begin, end) + *std::max_element(begin, end);
+            }
+            index++;
+        } while ((i + index) < input.size() && !(sum > target));
+    }
+    return 0;
+}
+
 int main() {
     std::vector<uint64_t> input = read_stdin();
-    //uint64_t first = first_solution(input);
-    uint32_t second = second_solution(input);
+    uint64_t first = first_solution(input);
+    uint32_t second = second_solution(input, first);
     std::cout << "first answer: " << first << std::endl;
-    //std::cout << "second answer: " << second << std::endl;
+    std::cout << "second answer: " << second << std::endl;
     assert(first == 3199139634 && "first solution doesn't match");
-    //assert(second == 539 && "second solution doesn't match");
+    assert(second == 438559930 && "second solution doesn't match");
     return 0;
 }
