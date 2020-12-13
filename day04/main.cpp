@@ -36,7 +36,6 @@ public:
 
 private:
     void parse_input(std::string &&input) {
-        int32_t start_pos = 0;
         int32_t len = input.find(" ");
         while (len != std::string::npos) {
             parse_key_value(input.substr(0, len));
