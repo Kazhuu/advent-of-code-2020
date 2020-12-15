@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <iostream>
 
-uint64_t first_solution(const std::vector<uint64_t> &input, uint64_t target_turn) {
+uint64_t find_spoken_number(const std::vector<uint64_t> &input, uint64_t target_turn) {
     std::unordered_map<uint64_t, uint64_t> last_spoken;
     uint64_t first_previous_number;
     std::optional<uint64_t> second_previous_number;
@@ -26,17 +26,24 @@ uint64_t first_solution(const std::vector<uint64_t> &input, uint64_t target_turn
     }
     return *second_previous_number;
 }
+uint64_t first_solution(const std::vector<uint64_t> &input) {
+    return find_spoken_number(input, 2020);
+}
+
+uint64_t second_solution(const std::vector<uint64_t> &input) {
+    return find_spoken_number(input, 30000000);
+}
 
 int main() {
-    assert(first_solution({0, 3, 6}, 2020) == 436);
-    assert(first_solution({1, 3, 2}, 2020) == 1);
-    assert(first_solution({3, 1, 2}, 2020) == 1836);
+    assert(find_spoken_number({0, 3, 6}, 2020) == 436);
+    assert(find_spoken_number({1, 3, 2}, 2020) == 1);
+    assert(find_spoken_number({3, 1, 2}, 2020) == 1836);
 
-    uint32_t first = first_solution({1, 0, 16, 5, 17, 4}, 2020);
-    //uint64_t second = second_solution(bus_ids);
+    uint64_t first = first_solution({1, 0, 16, 5, 17, 4});
+    uint64_t second = second_solution({1, 0, 16, 5, 17, 4});
     std::cout << "first answer: " << first << std::endl;
-    //std::cout << "second answer: " << second << std::endl;
+    std::cout << "second answer: " << second << std::endl;
     assert(first == 1294 && "first solution doesn't match");
-    //assert(second == 800177252346225 && "second solution doesn't match");
+    assert(second == 573522 && "second solution doesn't match");
     return 0;
 }
