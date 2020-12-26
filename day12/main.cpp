@@ -22,9 +22,9 @@ std::pair<int64_t, int64_t> rotate(int64_t x, int64_t y, char direction, int64_t
     for (int i = 0; i < count; ++i) {
         std::swap(x, y);
         if (direction == 'R') {
-            x = -x;
-        } else  {
             y = -y;
+        } else  {
+            x = -x;
         }
     }
     return std::make_pair(x, y);
@@ -38,10 +38,10 @@ uint64_t first_solution(const std::vector<std::string> &input) {
         auto [direction, value] = parse_line(line);
         switch (direction) {
             case 'N':
-                y -= value;
+                y += value;
                 break;
             case 'S':
-                y += value;
+                y -= value;
                 break;
             case 'E':
                 x += value;
@@ -59,11 +59,11 @@ uint64_t first_solution(const std::vector<std::string> &input) {
                 if (rotation == 0) {
                     x += value;
                 } else if (rotation == 90 || rotation == -270) {
-                    y += value;
+                    y -= value;
                 } else if (rotation == 180 || rotation == -180) {
                     x -= value;
                 } else if (rotation == 270 || rotation == -90) {
-                    y -= value;
+                    y += value;
                 } else {
                     std::cout << "wrong degree" << std::endl;
                     exit(1);
@@ -79,17 +79,17 @@ uint64_t first_solution(const std::vector<std::string> &input) {
 
 uint64_t second_solution(const std::vector<std::string> &input) {
     int64_t way_point_x = 10;
-    int64_t way_point_y = -1;
+    int64_t way_point_y = 1;
     int64_t ship_x = 0;
     int64_t ship_y = 0;
     for (auto &line : input) {
         auto [direction, value] = parse_line(line);
         switch (direction) {
             case 'N':
-                way_point_y -= value;
+                way_point_y += value;
                 break;
             case 'S':
-                way_point_y += value;
+                way_point_y -= value;
                 break;
             case 'E':
                 way_point_x += value;
@@ -114,14 +114,6 @@ uint64_t second_solution(const std::vector<std::string> &input) {
 }
 
 int main() {
-    int64_t x, y;
-    std::tie(x, y) = rotate(3, 2, 'R', 90);
-    assert(x == -2 && y == 3);
-    std::tie(x, y) = rotate(3, 2, 'L', 90);
-    assert(x == 2 && y == -3);
-    std::tie(x, y) = rotate(3, 2, 'L', 360);
-    assert(x == 3 && y == 2);
-
     const std::vector<std::string> input = read_stdin();
     uint64_t first = first_solution(input);
     uint64_t second = second_solution(input);
