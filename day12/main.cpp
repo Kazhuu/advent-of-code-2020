@@ -17,6 +17,19 @@ std::tuple<char, int64_t> parse_line(const std::string &line) {
     return std::make_tuple(line[0], std::stol(line.substr(1, line.size())));
 }
 
+std::pair<int64_t, int64_t> rotate(int64_t x, int64_t y, char direction, int64_t degrees) {
+    int64_t count = degrees / 90;
+    for (int i = 0; i < count; ++i) {
+        std::swap(x, y);
+        if (direction == 'R') {
+            x = -x;
+        } else  {
+            y = -y;
+        }
+    }
+    return std::make_pair(x, y);
+}
+
 uint64_t first_solution(const std::vector<std::string> &input) {
     int64_t rotation = 0;
     int64_t x = 0;
@@ -61,16 +74,60 @@ uint64_t first_solution(const std::vector<std::string> &input) {
                 exit(1);
         }
     }
-    return x + y;
+    return std::abs(x) + std::abs(y);
+}
+
+uint64_t second_solution(const std::vector<std::string> &input) {
+    int64_t way_point_x = 10;
+    int64_t way_point_y = -1;
+    int64_t ship_x = 0;
+    int64_t ship_y = 0;
+    for (auto &line : input) {
+        auto [direction, value] = parse_line(line);
+        switch (direction) {
+            case 'N':
+                way_point_y -= value;
+                break;
+            case 'S':
+                way_point_y += value;
+                break;
+            case 'E':
+                way_point_x += value;
+                break;
+            case 'W':
+                way_point_x -= value;
+                break;
+            case 'L':
+            case 'R':
+                std::tie(way_point_x, way_point_y) = rotate(way_point_x, way_point_y, direction, value);
+                break;
+            case 'F':
+                ship_x += value * way_point_x;
+                ship_y += value * way_point_y;
+                break;
+            default:
+                std::cout << "wrong command" << std::endl;
+                exit(1);
+        }
+    }
+    return std::abs(ship_x) + std::abs(ship_y);
 }
 
 int main() {
+    int64_t x, y;
+    std::tie(x, y) = rotate(3, 2, 'R', 90);
+    assert(x == -2 && y == 3);
+    std::tie(x, y) = rotate(3, 2, 'L', 90);
+    assert(x == 2 && y == -3);
+    std::tie(x, y) = rotate(3, 2, 'L', 360);
+    assert(x == 3 && y == 2);
+
     const std::vector<std::string> input = read_stdin();
     uint64_t first = first_solution(input);
-    //uint64_t second = second_solution(map);
+    uint64_t second = second_solution(input);
     std::cout << "first answer: " << first << std::endl;
-    //std::cout << "second answer: " << second << std::endl;
-    //assert(first == 2361 && "first solution doesn't match");
-    //assert(second == 2119 && "second solution doesn't match");
+    std::cout << "second answer: " << second << std::endl;
+    assert(first == 2297 && "first solution doesn't match");
+    assert(second == 89984 && "second solution doesn't match");
     return 0;
 }
