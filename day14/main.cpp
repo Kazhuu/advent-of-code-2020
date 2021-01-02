@@ -48,6 +48,39 @@ std::pair<uint64_t, uint64_t> make_masks(const std::string &mask_line) {
     return std::make_pair(std::stoul(clear_mask, 0, 2), std::stoul(set_mask, 0, 2));
 }
 
+uint64_t sum_memory(const std::unordered_map<uint64_t, uint64_t> &memory) {
+    auto binary_op = [](const uint64_t sum, const auto &item) {
+        return sum + item.second;
+    };
+    return std::accumulate(memory.begin(), memory.end(), (uint64_t)0, std::move(binary_op));
+}
+
+std::vector<uint64_t> generate_addresses(const std::string &mask, std::bitset<36> address) {
+    // First apply the mask and collect the positions of floating bits in the
+    // mask. Notice the reverse index order because of bitset zero index starts
+    // from the rightmost index and string from the leftmost index.
+    std::vector<uint64_t> floating_bits;
+    for (int i = 0; i < mask.size(); ++i) {
+        if (mask[i] == 'X') {
+            floating_bits.push_back(mask.size() - i - 1);
+        } else if (mask[i] == '1') {
+            address[mask.size() - i - 1] = true;
+        }
+    }
+    // Next generate all possible addresses from floating bits.
+    std::vector<uint64_t> addresses;
+    uint64_t address_count = 1u << floating_bits.size();
+    for (uint64_t bits = 0; bits < address_count; ++bits) {
+        std::bitset<36> new_address(address);
+        for (uint64_t i = 0; i < floating_bits.size(); ++i) {
+            new_address[floating_bits[i]] = (bits & (1u << i)) != 0;
+        }
+        addresses.push_back(new_address.to_ullong());
+    }
+    return addresses;
+}
+
+
 uint64_t first_solution(const std::vector<std::string> &input) {
     std::unordered_map<uint64_t, uint64_t> memory;
     int64_t clear_mask = 0;
@@ -61,19 +94,33 @@ uint64_t first_solution(const std::vector<std::string> &input) {
             std::tie(clear_mask, set_mask) = make_masks(mask);
         }
     }
-    auto binary_op = [](uint64_t sum, std::unordered_map<uint64_t, uint64_t>::value_type &item) {
-        return sum + item.second;
-    };
-    return std::accumulate(memory.begin(), memory.end(), (uint64_t)0, binary_op);
+    return sum_memory(memory);
+}
+
+uint64_t second_solution(const std::vector<std::string> &input) {
+    std::unordered_map<uint64_t, uint64_t> memory;
+    std::string mask;
+    for (auto &line : input) {
+        if (line[1] == 'e') {
+            auto [address, value] = parse_mem_line(line);
+            std::vector<uint64_t> addresses = generate_addresses(mask, address);
+            for (auto addr : addresses) {
+                memory[addr] = value;
+            }
+        } else {
+            mask = parse_mask_line(line);
+        }
+    }
+    return sum_memory(memory);
 }
 
 int main() {
     const std::vector<std::string> input = read_stdin();
     uint64_t first = first_solution(input);
-    //uint64_t second = second_solution(input);
+    uint64_t second = second_solution(input);
     std::cout << "first answer: " << first << std::endl;
-    //std::cout << "second answer: " << second << std::endl;
+    std::cout << "second answer: " << second << std::endl;
     assert(first == 10452688630537 && "first solution doesn't match");
-    //assert(second == 320536571743074 && "second solution doesn't match");
+    assert(second == 2881082759597 && "second solution doesn't match");
     return 0;
 }
