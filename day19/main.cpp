@@ -35,8 +35,8 @@ std::string build_rule_string(std::string &&term) {
 }
 
 std::regex build_regex(const std::string &key,
-    std::unordered_map<std::string, std::string> &terminal_rules,
-    std::unordered_map<std::string, std::string> &unresolved_rules) {
+    std::unordered_map<std::string, std::string> terminal_rules,
+    std::unordered_map<std::string, std::string> unresolved_rules) {
 
     std::regex pattern(R"(\((\d+)\))");
     while (!unresolved_rules.empty()) {
@@ -95,6 +95,21 @@ int main() {
     }
     std::cout << "first answer: " << match_count << std::endl;
     assert(match_count == 162 && "first solution doesn't match");
+
+    // Hack for part 2. Repeat the pattern five times which is enough for
+    // matching all needed messages.
+	unresolved_rules["8"] = "((42)|((42)(42))|((42)(42)(42))|((42)(42)(42)(42)))";
+	unresolved_rules["11"] = "(((42)(31))|((42)(42)(31)(31))|((42)(42)(42)(31)(31)(31))|((42)(42)(42)(42)(31)(31)(31)(31)))";
+    message_pattern = build_regex("0", terminal_rules, unresolved_rules);
+    match_count = 0;
+    for (auto &message : messages) {
+        if (std::regex_match(message, match, message_pattern)) {
+            ++match_count;
+        }
+    }
+    std::cout << "second answer: " << match_count << std::endl;
+    assert(match_count == 267 && "second solution doesn't match");
+
     return 0;
 }
 
